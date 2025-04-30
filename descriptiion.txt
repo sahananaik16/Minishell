@@ -1,0 +1,84 @@
+Name: Sahana Naik
+Id:24016_024
+Project name: Mini Shell
+Description: Mini shell is a command processor, typically run in a text window, allowing the user to type commands which cause actions.
+             Every Operating System provides this Command Line Interface (CLI) which takes commands from the user and provides required 
+             output. BASH can also read commands from a file, called a script. Like all Unix shells, it supports piping and variables 
+             as well. 
+             The goal of this project is to implement a mini-shell that mimics the BASH shell by using Linux Kernel System calls and 
+             IPC mechanisms like signals. It will also handle special keyboard actions (ex: Control C), can be extended for advanced 
+             functionalities (ex: Command history) as well.
+             This project represents a basic implementation of a shell program (minishell) with built-in and external command 
+             execution functionalities. The program begins by continuously prompting the user for input. It supports handling 
+             both built-in shell commands (e.g., `cd`, `pwd`, `exit`, `echo`, `fg`, `bg`, `jobs`) and external commands by 
+             forking processes. For external commands, it parses the input string and executes the command using `execvp`, while
+             for built-in commands, it directly handles them in the shell. The shell also supports job control, where background 
+             jobs can be listed, brought to the foreground, or continued in the background using signals like `SIGCONT`. Input 
+             processing includes handling special cases like variable substitution in the `echo` command and dynamically updating 
+             the shell prompt. Signals such as `SIGINT` and `SIGTSTP` are caught and processed, allowing the user to interrupt or 
+             stop processes. The program maintains a linked list of background jobs, enabling easy management of jobs throughout 
+             the shell session.
+
+
+Requirement details:
+
+1.Provide a prompt for the user to enter commands
+
+1. Display the default prompt as msh>
+2. Prompt should be customizable using environmental variable PS1
+ • To change the prompt user will do PS1=NEW_PROMPT
+ • Make sure that you do not allow whitespaces between = i.e., do not allow PS1 = NEW_PROMPT
+• In the above case, it should be treated like a normal command
+ 
+2. Execute the command entered by the user
+
+1. User will enter a command to execute
+2. If it is an external command
+ • Create a child process and execute the command
+• Parent should wait for the child to complete
+ • Only on completion, msh prompt should be displayed
+ • If user entering without a command should show the prompt again
+ 
+3 Special Variables:
+
+1. Exit status of the last command (echo $?)
+ • After executing a command the exit status should be available
+ • echo $? should print the exit status of the last command executed
+2. PID of msh (echo $$)
+• echo $$: should print msh's PID
+3. Shell name (echo $SHELL)
+• echo $SHELL: should print msh executable path
+
+ 4 Signal handling
+
+Provide shortcuts to send signals to running program
+1. Ctrl-C (Send SIGINT)
+     On pressing Ctrl-C
+• If a programming is running in foreground, send SIGINT to the program (child process)
+• If no foreground program exists, re-display the msh prompt 2. Ctrl+z (Send SIGSTP)
+2. Ctrl-z (Send SIGTSTP)
+      On pressing Ctrl+z
+• The program running in foreground, should stop the program and parent will display pid of child 2.5
+
+5.Built-in commands
+
+1. exit exit: This command will terminate the msh program
+2. cd cd: Change directory
+3. pwd: show the current working directory
+
+6 Background Process / Job control
+
+1. Allow a program to run in background To run a program in background use ampersand (&) after the command. For eg: sleep 50 &
+2. Implement fg, bg and jobs commands
+• bg will will move a stopped process to background sleep 10 & is equallent to sleep 10 then ctrl + z and bg
+After this the msh prompt should be displayed indicating it is readyto accept further commands. After a bg process ends, cleanup the process using wait. 
+NOTE: You may have to use SIGCHLD signal handler for this 
+On termination of bg process, display its exit status.User should be able to run any number of background processes. 
+• fg will bring a background process to foreground. 
+  Only fg bring last background process, or fg will bring given pid to foreground
+       • jobs will print all background process details.
+7 Pipe functionality
+
+1. Allow multiple processes communication by using pipes.
+2. Create pipes and childs dynamically as per pipes passed from command-line
+Eg: ls | wc, ls -l /dev | grep tty | wc -l
